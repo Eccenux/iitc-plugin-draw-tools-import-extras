@@ -4,8 +4,8 @@
 // @id          iitc-plugin-draw-tools-import-extras
 // @category    Misc
 // @namespace   pl.enux.iitc
-// @version     0.0.1
-// @description [0.0.1] Importing portal list (lat,lon list) to draw tools.
+// @version     0.1.0
+// @description [0.1.0] Importing portal list (lat,lon list) to draw tools.
 // @match       https://*.ingress.com/intel*
 // @match       http://*.ingress.com/intel*
 // @match       https://*.ingress.com/mission/*
@@ -59,8 +59,6 @@ class DrawToolsHelper {
 	}
 }
 
-export {DrawToolsHelper}
-
 
 var importHtml = `
 	<p>Paste portal locations list here (latgitude,longitude). One portal per line.</p>
@@ -70,6 +68,7 @@ var importHtml = `
 class MyPlugin {
 	constructor(codeName) {
 		this.codeName = codeName;
+		this.helper = new DrawToolsHelper();
 	}
 
 	setup() {
@@ -86,38 +85,54 @@ class MyPlugin {
 	setupImport(toolbox) {
 		const importButton = document.createElement('a');
 		importButton.textContent = 'DrawTools Import';
-		importButton.addEventListener('click', ()=>{
+		importButton.addEventListener('click', () => {
 			this.openImport();
 		});
 		toolbox.appendChild(importButton);
 	}
 
 	openImport() {
-		const dialogElement = dialog({
+		const $dialog = dialog({
 			html: importHtml,
 			width: 600,
 			dialogClass: `ui-dialog-${this.codeName}-import`,
 			title: 'Draw Tools Import',
 			buttons: {
-				'OK': function () {
-					alert('todo');
-					console.log(this.codeName, dialogElement);
-					dialogElement.dialog('close');
+				'OK': () => {
+					let dialogElement = $dialog[0];
+					const positionsField = dialogElement.querySelector('textarea');
+					if (this.importUserData(positionsField.value)) {
+						$dialog.dialog('close');
+					} else {
+						alert('Import failed!');
+					}
 				}
 			},
 		});
 	}
 
 	importUserData(userText) {
+		try {
+			let drawData = this.prepareLocList(userText);
+			window.plugin.drawTools.drawnItems.clearLayers();
+			window.plugin.drawTools.import(drawData);
+			console.log(this.codeName, 'reset and import items', drawData);
+			alert('Import Successful.');
+			window.plugin.drawTools.save();
+		} catch (error) {
+			console.error(this.codeName, error);
+			return false;
+		}
+		return true;
 	}
+
 	prepareLocList(userText) {
 		let positionsCsv = userText
 			.trim()
 			.replace(/\s*\n\s*/g, '\n')
-			.split('\n')
-		;		
-		let summary = drawToolsHelper.summary(positionsCsv, color);
-		return summary;
+			.split('\n');
+		let drawData = this.helper.summary(positionsCsv);
+		return drawData;
 	}
 }
 

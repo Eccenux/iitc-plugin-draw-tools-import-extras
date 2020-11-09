@@ -37,7 +37,7 @@ class MyPlugin {
 	setupImport(toolbox) {
 		const importButton = document.createElement('a');
 		importButton.textContent = 'DrawTools Import';
-		importButton.addEventListener('click', ()=>{
+		importButton.addEventListener('click', () => {
 			this.openImport();
 		});
 		toolbox.appendChild(importButton);
@@ -47,29 +47,45 @@ class MyPlugin {
 	 * Open import dialog.
 	 */
 	openImport() {
-		const dialogElement = dialog({
+		const $dialog = dialog({
 			html: importHtml,
 			width: 600,
 			dialogClass: `ui-dialog-${this.codeName}-import`,
 			title: 'Draw Tools Import',
 			buttons: {
 				'OK': () => {
-					alert('todo');
-					console.log(this.codeName, dialogElement);
-					//const positionsField = dialogElement.querySelector('textarea');
-					//this.importUserData(positionsField.value);
-					//$(this).dialog('close');
-					dialogElement.dialog('close');
+					let dialogElement = $dialog[0];
+					const positionsField = dialogElement.querySelector('textarea');
+					if (this.importUserData(positionsField.value)) {
+						$dialog.dialog('close');
+					} else {
+						alert('Import failed!');
+					}
 				}
 			},
 		});
 	}
 
+	/**
+	 * Import data.
+	 * @param {String} userText 
+	 */
 	importUserData(userText) {
-		let drawData = this.prepareLocList(userText);
-		console.log(drawData);
-
+		try {
+			let drawData = this.prepareLocList(userText);
+			window.plugin.drawTools.drawnItems.clearLayers();
+			window.plugin.drawTools.import(drawData);
+			console.log(this.codeName, 'reset and import items', drawData);
+			alert('Import Successful.');
+			// to write back the data to localStorage
+			window.plugin.drawTools.save();
+		} catch (error) {
+			console.error(this.codeName, error);
+			return false;
+		}
+		return true;
 	}
+
 	/**
 	 * Prepare user entered location list.
 	 * @param {String} userText 
@@ -78,8 +94,7 @@ class MyPlugin {
 		let positionsCsv = userText
 			.trim()
 			.replace(/\s*\n\s*/g, '\n')
-			.split('\n')
-		;		
+			.split('\n');
 		let drawData = this.helper.summary(positionsCsv);
 		return drawData;
 	}

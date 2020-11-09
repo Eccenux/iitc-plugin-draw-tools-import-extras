@@ -1,7 +1,7 @@
 {
 	"name": "iitc-plugin-draw-tools-import-extras",
-	"version": "0.0.1",
-	"description": "[0.0.1] Importing portal list (lat,lon list) to draw tools.",
+	"version": "0.1.0",
+	"description": "[0.1.0] Importing portal list (lat,lon list) to draw tools.",
 	"author": "Eccenux",
 	"license": "MIT",
 	"main": "index.js",
