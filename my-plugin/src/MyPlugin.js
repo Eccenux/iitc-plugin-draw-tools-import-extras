@@ -1,4 +1,4 @@
-/* global dialog */
+/* global dialog DrawToolsHelper */
 
 var importHtml = `
 	<p>Paste portal locations list here (latgitude,longitude). One portal per line.</p>
@@ -12,6 +12,7 @@ var importHtml = `
 class MyPlugin {
 	constructor(codeName) {
 		this.codeName = codeName;
+		this.helper = new DrawToolsHelper();
 	}
 
 	/**
@@ -46,17 +47,40 @@ class MyPlugin {
 	 * Open import dialog.
 	 */
 	openImport() {
-		dialog({
+		const dialogElement = dialog({
 			html: importHtml,
 			width: 600,
 			dialogClass: `ui-dialog-${this.codeName}-import`,
 			title: 'Draw Tools Import',
 			buttons: {
-				'OK': function () {
+				'OK': () => {
 					alert('todo');
+					console.log(this.codeName, dialogElement);
+					//const positionsField = dialogElement.querySelector('textarea');
+					//this.importUserData(positionsField.value);
 					//$(this).dialog('close');
+					dialogElement.dialog('close');
 				}
 			},
 		});
+	}
+
+	importUserData(userText) {
+		let drawData = this.prepareLocList(userText);
+		console.log(drawData);
+
+	}
+	/**
+	 * Prepare user entered location list.
+	 * @param {String} userText 
+	 */
+	prepareLocList(userText) {
+		let positionsCsv = userText
+			.trim()
+			.replace(/\s*\n\s*/g, '\n')
+			.split('\n')
+		;		
+		let drawData = this.helper.summary(positionsCsv);
+		return drawData;
 	}
 }

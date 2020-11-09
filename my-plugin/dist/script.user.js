@@ -15,6 +15,52 @@
 // @grant       none
 // ==/UserScript==
 
+class DrawToolsHelper {
+	constructor() {
+		this.defaultColor = "#a24ac3";
+	}
+
+	summary(positionsCsv, color) {
+		let positions = positionsCsv.map(ll=>this.llToDrawTools(ll));
+
+		let summary = positions.map(latLng=>this.marker(latLng, color));
+		let lines = this.polyline(positions, color);
+		summary.push(lines);
+
+		return summary;
+	}
+
+	llToDrawTools(ll) {
+		let split = ll.split(',');
+		return {
+			"lat": split[0],
+			"lng": split[1],
+		};
+	}
+	marker(latLng, color) {
+		if (typeof color !== 'string') {
+			color = this.defaultColor;
+		}
+		return {
+			"type": "marker",
+			"latLng": latLng,
+			"color": color,
+		};
+	}
+	polyline(positions, color) {
+		if (typeof color !== 'string') {
+			color = this.defaultColor;
+		}
+		return {
+			"type": "polyline",
+			"latLngs": positions,
+			"color": color,
+		};
+	}
+}
+
+export {DrawToolsHelper}
+
 
 var importHtml = `
 	<p>Paste portal locations list here (latgitude,longitude). One portal per line.</p>
@@ -47,7 +93,7 @@ class MyPlugin {
 	}
 
 	openImport() {
-		dialog({
+		const dialogElement = dialog({
 			html: importHtml,
 			width: 600,
 			dialogClass: `ui-dialog-${this.codeName}-import`,
@@ -55,9 +101,23 @@ class MyPlugin {
 			buttons: {
 				'OK': function () {
 					alert('todo');
+					console.log(this.codeName, dialogElement);
+					dialogElement.dialog('close');
 				}
 			},
 		});
+	}
+
+	importUserData(userText) {
+	}
+	prepareLocList(userText) {
+		let positionsCsv = userText
+			.trim()
+			.replace(/\s*\n\s*/g, '\n')
+			.split('\n')
+		;		
+		let summary = drawToolsHelper.summary(positionsCsv, color);
+		return summary;
 	}
 }
 
