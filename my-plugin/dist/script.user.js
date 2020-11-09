@@ -1,11 +1,11 @@
 // ==UserScript==
 // @author      Eccenux
-// @name        IITC plugin: Nux termplate
-// @id          iitc-plugin--nux-termplate
+// @name        IITC plugin: Import extras for Draw Tools
+// @id          iitc-plugin-draw-tools-import-extras
 // @category    Misc
 // @namespace   pl.enux.iitc
 // @version     0.0.1
-// @description [0.0.1] Nux template
+// @description [0.0.1] Importing portal list (lat,lon list) to draw tools.
 // @match       https://*.ingress.com/intel*
 // @match       http://*.ingress.com/intel*
 // @match       https://*.ingress.com/mission/*
@@ -27,19 +27,19 @@ class MyPlugin {
 
 
 
-let myPlugin = new MyPlugin('examplePluginCodeName');
+let myPlugin = new MyPlugin('drawToolsImportExtras');
 
 if(typeof window.plugin !== 'function') window.plugin = function() {};
 
-window.plugin.examplePluginCodeName = myPlugin;
+window.plugin.drawToolsImportExtras = myPlugin;
 
 
 function wrapper(plugin_info) {
 
 
 	function setup() {
-		console.log('examplePluginCodeName - init')
-		window.plugin.examplePluginCodeName.setup();
+		console.log('drawToolsImportExtras - init')
+		window.plugin.drawToolsImportExtras.setup();
 	}
 
 

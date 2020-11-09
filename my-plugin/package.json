@@ -1,15 +1,15 @@
 {
-	"name": "iitc-plugin--nux-termplate",
+	"name": "iitc-plugin-draw-tools-import-extras",
 	"version": "0.0.1",
-	"description": "[0.0.1] Nux template",
+	"description": "[0.0.1] Importing portal list (lat,lon list) to draw tools.",
 	"author": "Eccenux",
 	"license": "MIT",
 	"main": "index.js",
 	"monkeyscript": {
 		"meta": {
-			"name": "IITC plugin: Nux termplate",
+			"name": "IITC plugin: Import extras for Draw Tools",
 			"category": "Misc",
-			"id": "iitc-plugin--nux-termplate",
+			"id": "iitc-plugin-draw-tools-import-extras",
 			"namespace": "pl.enux.iitc",
 			"grant": [
 				"none"
