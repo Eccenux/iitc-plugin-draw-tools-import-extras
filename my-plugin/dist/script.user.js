@@ -15,13 +15,49 @@
 // @grant       none
 // ==/UserScript==
 
+
+var importHtml = `
+	<p>Paste portal locations list here (latgitude,longitude). One portal per line.</p>
+	<textarea style="width:100%;box-sizing: border-box;" rows="5"></textarea>
+`;
+
 class MyPlugin {
-	constructor (codeName) {
+	constructor(codeName) {
 		this.codeName = codeName;
 	}
 
 	setup() {
 		console.log('MyPlugin setup', this.codeName);
+
+		const toolbox = document.getElementById('toolbox');
+		if (!toolbox) {
+			console.error(this.codeName, 'Toolbox not ready');
+		} else {
+			this.setupImport(toolbox)
+		}
+	}
+
+	setupImport(toolbox) {
+		const importButton = document.createElement('a');
+		importButton.textContent = 'DrawTools Import';
+		importButton.addEventListener('click', ()=>{
+			this.openImport();
+		});
+		toolbox.appendChild(importButton);
+	}
+
+	openImport() {
+		dialog({
+			html: importHtml,
+			width: 600,
+			dialogClass: `ui-dialog-${this.codeName}-import`,
+			title: 'Draw Tools Import',
+			buttons: {
+				'OK': function () {
+					alert('todo');
+				}
+			},
+		});
 	}
 }
 
